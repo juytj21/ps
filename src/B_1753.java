@@ -1,16 +1,65 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class B_1753 {
-    public static void main(String[] args) {
-        Scanner s = new Scanner(System.in);
-        int V = s.nextInt();
-        int E = s.nextInt();
-        int K = s.nextInt();
+    static int V, E, K;
+    static List<int[]>[] edge;
+    static final int INF = Integer.MAX_VALUE;
+    static int[] dist;
 
-        for (int i = 0; i < E; i++) {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
+        st = new StringTokenizer(br.readLine());
+        V = Integer.parseInt(st.nextToken());
+        E = Integer.parseInt(st.nextToken());
+
+        K = Integer.parseInt(br.readLine());
+
+        edge = new ArrayList[V + 1];
+        dist = new int[V + 1];
+        Arrays.fill(dist, INF);
+
+        for (int i = 1; i <= V; i++) {
+            edge[i] = new ArrayList<>();
         }
 
+        for (int i = 0; i < E; i++) {
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+            edge[u].add(new int[]{w, v});
+        }
+
+        // 시작점 초기화
+        dist[K] = 0;
+        PriorityQueue<int[]> heap = new PriorityQueue<>(Comparator.comparingInt(o -> o[0]));
+        heap.add(new int[]{0, K});
+
+        while(!heap.isEmpty()) {
+            int[] current = heap.poll();
+            int cw = current[0];
+            int cv = current[1];
+
+            if(dist[cv] < cw) continue;
+
+            for (int[] next : edge[cv]) {
+                int nw = next[0];
+                int nv = next[1];
+
+                if (dist[nv] > cw + nw) {
+                    dist[nv] = cw + nw;
+                    heap.add(new int[]{dist[nv], nv});
+                }
+            }
+        }
+
+        for (int i = 1; i <= V; i++) {
+            if(dist[i] == INF) System.out.println("INF");
+            else System.out.println(dist[i]);
+        }
     }
 }
 
@@ -34,7 +83,16 @@ public class B_1753 {
  * 힙: (비용, 노드번호)
  * 거리 배열: 비용: int[]
  * 간선 저장, 인접리스트: (비용, 노드번호)[]
+ *
+ Tip!!
+ * 다익스트라 코드는 그냥 외우기!
+ * 코드가 복잡하므로 연습 필요.
+ * 중요한 건, 해당 문제가 다익스트라 문제인지 알아내는 능력
+        * 한 점에서 다른 점으로 가는 최소 비용
  */
+
+
+
 
 /**
 아이디어
