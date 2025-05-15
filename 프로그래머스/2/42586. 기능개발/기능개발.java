@@ -2,38 +2,32 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        Queue <Integer> answer = new LinkedList<>();
-        Queue <Integer> list = new LinkedList<>();
-        Queue <Integer> spd = new LinkedList<>();
-        
+        Queue <Integer> q = new LinkedList<>();
+        int p = 1;
+        int curr = 0;
         for (int i = 0; i < progresses.length; i++) {
-            list.add(progresses[i]);
-            spd.add(speeds[i]);
-        }
-        
-        while(true) {
-            if (list.peek() == null) break;
-            int r = (100 - list.peek() + spd.peek() - 1) / spd.peek();
-            int len = list.size();
-            int p = 0;
-            for (int i = 0; i < len; i++) {
-                if (list.peek() + spd.peek() * r >= 100) {
-                    p++;
-                    list.remove();
-                    spd.remove();
+            if (progresses[i] + speeds[i] * p >= 100) curr++;
+            else {
+                if (curr > 0) {
+                    q.add(curr);
+                    p = (100 - progresses[i]) / speeds[i];
+                    if ((100 - progresses[i]) % speeds[i] > 0) p++;
+                    curr = 1;
+                } else {
+                    p = (100 - progresses[i]) / speeds[i];
+                    if ((100 - progresses[i]) % speeds[i] > 0) p++;
+                    curr++;
                 }
-                else break;
             }
-            if (p > 0) {
-                answer.add(p);
-            }
+            
+            if (i == progresses.length-1) q.add(curr);
         }
         
-        int r = answer.size();
-        int[] ans = new int[r];
-        for (int i = 0; i < r; i++) {
-            ans[i] = answer.poll();
+        int len = q.size();
+        int [] answer = new int[len];
+        for (int i = 0; i < len; i++) {
+            answer[i] = q.poll();
         }
-        return ans;
+        return answer;
     }
 }
