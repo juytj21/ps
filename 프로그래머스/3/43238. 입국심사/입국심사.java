@@ -2,32 +2,25 @@ import java.util.*;
 
 class Solution {
     public long solution(int n, int[] times) {
-        long answer = 0;
-        long hi = 0;
-        for (int m : times) if (hi < m) hi = m;
-        hi *= n;
+        Arrays.sort(times);
+        long min = 1;
+        long max = (long) times[0] * n;
+        long time = 0;
         
-        long lo = 0;
-        
-        while (lo <= hi) {
-            long mid = (lo + hi) >>> 1;
-            if (count(mid, n, times)) {
-                answer = mid;
-                hi = mid - 1;
-            } else {
-                lo = mid + 1;
+        while (min <= max) {
+            long sum = 0;
+            long mid = (max + min) / 2;
+            
+            for (int i = 0; i < times.length; i++) {
+                sum += mid / times[i];
             }
-        }
-        return answer;
-    }
-    
-    boolean count (long mid, int n, int[] times) {
-        long cnt = 0;
-        for (int i = 0; i < times.length; i++) {
-            cnt += mid / times[i];
-            if (cnt >= n) return true;
+            
+            if (sum >= n) {
+                time = mid;
+                max = mid - 1;
+            } else min = mid + 1;
         }
         
-        return cnt >= n;
+        return time;
     }
 }
